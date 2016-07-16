@@ -13,7 +13,7 @@ module.exports = {
     loaders: [
       {
         test: /\.(css|styl)$/,
-        loader: "style!css!stylus"
+        loaders: ['style', 'css', 'stylus']
       },
       {
         test: /\.(js|jsx)$/,
@@ -38,6 +38,7 @@ module.exports = {
   ],
 
   devServer: {
+    port: 12345,
     contentBase: "build",
     colors: true,
     historyApiFallback: true,
