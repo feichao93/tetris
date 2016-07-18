@@ -1,27 +1,13 @@
 import { Map, Set } from 'immutable'
 import { TICK } from './utils/timerMiddleware'
 import { MOVE } from './actions'
-import { TileInfo, TetrominoInfo, Point } from './types'
-import { COLORS, TETROMINO_TYPES, TETROMINO_COLORS } from './constants'
+import { TileInfo } from './types'
+import { TETROMINO_COLORS } from './constants'
 import { canMoveDown, getPoints, removeTiles, spawn, isValidTetromino } from './utils/common'
 
 const initialState = Map({
-  tiles: Set([
-    TileInfo.of(0, 19, COLORS.CYAN),
-    TileInfo.of(1, 19, COLORS.CYAN),
-    TileInfo.of(2, 19, COLORS.CYAN),
-    TileInfo.of(3, 19, COLORS.CYAN),
-    TileInfo.of(4, 19, COLORS.CYAN),
-    TileInfo.of(6, 19, COLORS.PURPLE),
-    TileInfo.of(7, 19, COLORS.RED),
-    TileInfo.of(8, 19, COLORS.RED),
-    TileInfo.of(9, 19, COLORS.RED),
-  ]),
-  tetromino: TetrominoInfo({
-    type: TETROMINO_TYPES.I,
-    refPoint: Point({ x: 5, y: 0 }),
-    angle: 90,
-  }),
+  tiles: Set(),
+  tetromino: spawn(),
   score: 0,
 })
 
@@ -49,7 +35,7 @@ export default function reducer(state = initialState, action) {
     const newScore = score + unionedTiles.size - clearedTiles.size
     return state.merge({
       tiles: clearedTiles,
-      tetromino: spawn(), // todo reducer has side-effect
+      tetromino: spawn(), // todo reducer has side-effect!
       score: newScore,
     })
   } else if (action.type === MOVE) {

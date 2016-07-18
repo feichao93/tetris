@@ -84,7 +84,7 @@ export function canMoveDown(tetromino, tiles) {
 /** 移除可以消除的方块, 并返回新的tiles集合 */
 export function removeTiles(tiles) {
   const points = tiles.map(tile => tile.point).toSet()
-  let shouldRemove = Range(0, BOARD_HEIGHT).map(() => true).toList()
+  let shouldRemove = Range(0, BOARD_HEIGHT).map(() => true).toMap()
   Range(0, BOARD_HEIGHT).forEach(y => {
     Range(0, BOARD_WIDTH).forEach(x => {
       const p = Point({ x, y })
@@ -95,11 +95,11 @@ export function removeTiles(tiles) {
       return true
     })
   })
-  const rowIndices = shouldRemove.filter(x => x).keySeq().reverse()
+  const rowIndices = shouldRemove.filter(x => x).keySeq() // 要移除的tiles的y坐标值
+  const downLength = Range(0, BOARD_HEIGHT).map(n => rowIndices.filter(x => x > n).count())
   // rowIndices example: [0, 2, 3]  表示有三行可以移除
-  // console.log(String(rowIndices))
-  // todo 移除若干行
-  return tiles
+  return tiles.filterNot(tile => rowIndices.includes(tile.point.y)) // 移除满足条件的若干行
+    .map(tile => tile.updateIn(['point', 'y'], y => y + downLength.get(y))) // 更新剩下的tiles的y坐标值
 }
 
 /** 获得一个随机整数, 返回结果为[start, end) */
