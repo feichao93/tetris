@@ -2,7 +2,7 @@ import { Map, Set } from 'immutable'
 import { TICK } from './utils/timerMiddleware'
 import { MOVE } from './actions'
 import { TileInfo, TetrominoInfo, Point } from './types'
-import { COLORS, TETROMINO_TYPES } from './constants'
+import { COLORS, TETROMINO_TYPES, TETROMINO_COLORS } from './constants'
 import { canMoveDown, getPoints, removeTiles, spawn, isValidTetromino } from './utils/common'
 
 const initialState = Map({
@@ -44,13 +44,12 @@ export default function reducer(state = initialState, action) {
     // -- If can spawn, then game continues.
     // state.update('tiles', ts => ts.union(getPoints(tetromino)))
     const unionedTiles = tiles.union(
-      getPoints(tetromino).map(({ x, y }) => TileInfo.of(x, y, COLORS.YELLOW))) // todo 使用正确的颜色
+      getPoints(tetromino).map(({ x, y }) => TileInfo.of(x, y, TETROMINO_COLORS[tetromino.type])))
     const clearedTiles = removeTiles(unionedTiles)
     const newScore = score + unionedTiles.size - clearedTiles.size
-    const spanwedTetromino = spawn()
     return state.merge({
       tiles: clearedTiles,
-      tetromino: spanwedTetromino,
+      tetromino: spawn(), // todo reducer has side-effect
       score: newScore,
     })
   } else if (action.type === MOVE) {

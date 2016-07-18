@@ -107,10 +107,16 @@ function randInt(start, end) {
   return Math.floor(Math.random() * (end - start) + start)
 }
 
+function getRandomTetrominoType() {
+  const r = Math.random()
+  const array = Object.keys(TETROMINO_TYPES)
+  return array[Math.floor(r * array.length)]
+}
+
 /** 生成新的tetromino */
 export function spawn() {
   return TetrominoInfo({
-    type: TETROMINO_TYPES.O,
+    type: getRandomTetrominoType(),
     refPoint: Point({ x: randInt(1, 8), y: 3 }),
     angle: 90,
   })

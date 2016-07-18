@@ -2,7 +2,7 @@ import React from 'react'
 import ImmutablePropTypes from 'react-immutable-proptypes'
 import { connect } from 'react-redux'
 import { Range } from 'immutable'
-import { GRID_SIZE, BOARD_WIDTH, BOARD_HEIGHT, COLORS } from '../constants'
+import { GRID_SIZE, BOARD_WIDTH, BOARD_HEIGHT, TETROMINO_COLORS } from '../constants'
 import { TileInfo, TetrominoInfo } from '../types'
 import { getPoints } from '../utils/common'
 
@@ -39,7 +39,7 @@ export default class Board extends React.Component {
 const Tetromino = ({ tetromino }) => (
   <div>
     {getPoints(tetromino).map((point, index) =>
-      <Tile key={index} tile={TileInfo({ point, color: COLORS.YELLOW })} />
+      <Tile key={index} tile={TileInfo({ point, color: TETROMINO_COLORS[tetromino.type] })} />
     ).toArray()}
   </div>
 )
