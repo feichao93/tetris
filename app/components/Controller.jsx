@@ -12,10 +12,11 @@ import {
   moveDown,
   rotate,
   setSpeed,
+  special,
 } from '../actions'
 
 @connect(state => state.toObject(), {
-  start, restart, pause, resume, drop, moveLeft, moveRight, moveDown, rotate, setSpeed,
+  start, restart, pause, resume, drop, moveLeft, moveRight, moveDown, rotate, setSpeed, special,
 })
 export default class Controller extends React.Component {
   static propTypes = {
@@ -34,6 +35,7 @@ export default class Controller extends React.Component {
     moveDown: React.PropTypes.func.isRequired,
     rotate: React.PropTypes.func.isRequired,
     setSpeed: React.PropTypes.func.isRequired,
+    special: React.PropTypes.func.isRequired,
   }
 
   componentDidMount() {
@@ -125,6 +127,11 @@ export default class Controller extends React.Component {
     this.props.setSpeed(this.props.speed - 1)
   }
 
+  yzcSpecial = () => {
+    this.refs.specialButton.blur()
+    this.props.special()
+  }
+
   render() {
     const { score, on, paused, gameover, speed } = this.props
     return (
@@ -141,12 +148,15 @@ export default class Controller extends React.Component {
           :
           <button onClick={this.pause} disabled={!on || gameover}>pause</button>
         }
+        <button onClick={this.yzcSpecial} ref="specialButton">
+          <small>超神的神秘按钮</small>
+        </button>
         <div style={{ marginTop: 15 }}>
           <label style={{ marginRight: 10 }}>当前速度 {speed}</label>
-          <button onClick={this.speedUp} disabled={gameover || speed === MAX_SPEED}>
+          <button onClick={this.speedUp} disabled={!on || speed === MAX_SPEED}>
             +
           </button>
-          <button onClick={this.speedDown} disabled={gameover || speed === MIN_SPEED}>
+          <button onClick={this.speedDown} disabled={!on || speed === MIN_SPEED}>
             -
           </button>
         </div>

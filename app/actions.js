@@ -1,6 +1,7 @@
+import { Range } from 'immutable'
 import { spawn, isValidTetromino, canMoveDown, getPoints, removeTiles } from './common'
-import { TileInfo } from './types'
-import { TETROMINOS, ADD_SCORE, BOARD_WIDTH } from './constants'
+import { TileInfo, Point } from './types'
+import { TETROMINOS, ADD_SCORE, BOARD_WIDTH, BOARD_HEIGHT } from './constants'
 
 // 重置tick的倒计时
 export const RESET_TICK_TIMEOUT = 'RESET_TICK_TIMEOUT'
@@ -105,15 +106,33 @@ export const tick = (dispatch, getState) => {
   // 3. Try to spawn new tetromino.
   // -- If cannot spawn, then game is over.
   // -- If can spawn, then game continues.
-  const unionedTiles = tiles.union(getPoints(tetromino).map(point => TileInfo({
+  const afterUnion = tiles.union(getPoints(tetromino).map(point => TileInfo({
     point,
     color: TETROMINOS[tetromino.type].color,
   })))
-  const removedTiles = removeTiles(unionedTiles)
+  const afterRemove = removeTiles(afterUnion)
   dispatch({
     type: SET_SCORE,
-    score: score + ADD_SCORE[unionedTiles.size - removedTiles.size],
+    score: score + ADD_SCORE[afterUnion.size - afterRemove.size],
   })
   dispatch({ type: SET_TETROMINO, tetromino: spawn() })
-  dispatch({ type: SET_TILES, tiles: removedTiles })
+  dispatch({ type: SET_TILES, tiles: afterRemove })
+}
+
+export const special = () => (dispatch, getState) => {
+  // 清理最下面3行
+  const { tiles, score } = getState().toObject()
+  const helpers = Range(BOARD_HEIGHT - 3, BOARD_HEIGHT).map(y =>
+    Range(0, BOARD_WIDTH).map(x => TileInfo({
+      point: Point({ x, y }),
+      color: 'gold',
+    }))).flatten(true)
+    .toSet()
+  const afterUnion = tiles.union(helpers)
+  const afterRemove = removeTiles(afterUnion)
+  dispatch({ type: SET_TILES, tiles: afterRemove })
+  dispatch({
+    type: SET_SCORE,
+    score: score + ADD_SCORE[3 * BOARD_WIDTH],
+  })
 }
