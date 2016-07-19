@@ -164,7 +164,7 @@ export function spawnCrazy(tiles) {
   }
 
   return TetrominoInfo({
-    type: TETROMINO_TYPES.Z,
+    type: getRandomTetrominoType(),
     refPoint: Point({ x: 5, y: 1 }),
     angle: 0,
   })
