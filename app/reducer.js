@@ -1,19 +1,39 @@
 import { Map, Set } from 'immutable'
-import { MOVE, SET_TETROMINO, SET_TILES, SET_SCORE, RESET_GAME } from './actions'
+import {
+  START,
+  RESET,
+  MOVE,
+  SET_TETROMINO,
+  SET_TILES,
+  SET_SCORE,
+  GAME_OVER,
+  PAUSE,
+  RESUME,
+} from './actions'
 import { isValidTetromino } from './common'
 
 const initialState = Map({
   tiles: Set(),
   tetromino: null,
   score: 0,
-  gameover: false, // todo 用于标志游戏结束, 游戏结束之后提示用户游戏已经结束
-  // on: false, // todo 用于标志游戏正在进行中
+  on: false, // 标记游戏是否正在进行中
+  paused: false, // 标记游戏是否暂停
+  gameover: false, // 标记游戏是否结束
+  tickInterval: 250,
 })
 
 export default function reducer(state = initialState, action) {
-  const { tetromino, tiles } = state.toObject()
-  if (action.type === RESET_GAME) {
-    return initialState
+  const { tetromino, tiles, tickInterval } = state.toObject()
+  if (action.type === RESET) {
+    return initialState.set('tickInterval', tickInterval)
+  } else if (action.type === START) {
+    return state.set('on', true)
+  } else if (action.type === PAUSE) {
+    return state.set('paused', true)
+  } else if (action.type === RESUME) {
+    return state.set('paused', false)
+  } else if (action.type === GAME_OVER) {
+    return state.set('gameover', true)
   } else if (action.type === SET_TETROMINO) {
     return state.set('tetromino', action.tetromino)
   } else if (action.type === SET_TILES) {
@@ -22,10 +42,7 @@ export default function reducer(state = initialState, action) {
     return state.set('score', action.score)
   } else if (action.type === MOVE) {
     const { dx, dy, rotate } = action
-    const movedTetromino = tetromino.updateIn(['refPoint', 'x'], x => x + dx)
-      .updateIn(['refPoint', 'y'], y => y + dy)
-      .update('angle', angle => angle + rotate)
-      .amendAngle()
+    const movedTetromino = tetromino.move({ dx, dy, rotate })
     if (isValidTetromino(movedTetromino, tiles)) {
       return state.set('tetromino', movedTetromino)
     }

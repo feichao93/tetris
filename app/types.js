@@ -58,4 +58,10 @@ Object.assign(TetrominoInfo.prototype, {
     const direction = TETROMINOS[this.type].direction
     return this.update('angle', angle => angle % (90 * direction))
   },
+  move({ dx = 0, dy = 0, rotate = 0 }) {
+    return this.updateIn(['refPoint', 'x'], x => x + dx)
+      .updateIn(['refPoint', 'y'], y => y + dy)
+      .update('angle', angle => angle + rotate)
+      .amendAngle()
+  },
 })

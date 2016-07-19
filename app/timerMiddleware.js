@@ -1,12 +1,12 @@
-import { START, STOP, tick } from './actions'
+import { START, PAUSE, RESUME, GAME_OVER, RESET_TICK_TIMEOUT, tick } from './actions'
 
 let handler // todo 需要继续改进 这样的设计只能使用一个handler
-export default ({ dispatch }) => next => action => {
+export default ({ dispatch, getState }) => next => action => {
   if (typeof action === 'object') {
-    if (action.type === START) {
+    if (action.type === START || action.type === RESUME || action.type === RESET_TICK_TIMEOUT) {
       clearInterval(handler)
-      handler = setInterval(() => dispatch(tick), action.interval || 1000)
-    } else if (action.type === STOP) {
+      handler = setInterval(() => dispatch(tick), getState().get('tickInterval'))
+    } else if (action.type === PAUSE || action.type === GAME_OVER) {
       clearInterval(handler)
     }
   }
