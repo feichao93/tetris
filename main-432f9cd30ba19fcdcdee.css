@@ -1,1 +1,0 @@
-*{box-sizing:border-box}.app{position:relative}.board{position:absolute;left:0;top:0;background:#696969}.board .grid,.board .tile{position:absolute;left:0;top:0;border:1px solid #000}.board .grid{background:#c1c1c1}.controller{position:absolute;left:500px;top:0}
