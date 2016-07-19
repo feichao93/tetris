@@ -9,6 +9,7 @@ import {
   GAME_OVER,
   PAUSE,
   RESUME,
+  CRAZY,
 } from './actions'
 
 const initialState = Map({
@@ -18,6 +19,7 @@ const initialState = Map({
   on: false, // 标记游戏是否正在进行中
   paused: false, // 标记游戏是否暂停
   gameover: false, // 标记游戏是否结束
+  crazy: false,
   speed: 2,
 })
 
@@ -41,6 +43,8 @@ export default function reducer(state = initialState, action) {
     return state.set('score', action.score)
   } else if (action.type === SET_SPEED) {
     return state.set('speed', action.speed)
+  } else if (action.type === CRAZY) {
+    return state.set('crazy', true)
   }
   return state
 }

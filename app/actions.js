@@ -82,7 +82,7 @@ export const tick = (dispatch, getState) => {
   const { tetromino, tiles, score, crazy } = getState().toObject()
   // tick=0 时需要生成第一个tetromino
   if (!tetromino) {
-    dispatch({ type: SET_TETROMINO, tetromino: crazy ? spawn() : spawnCrazy(tiles) })
+    dispatch({ type: SET_TETROMINO, tetromino: crazy ? spawnCrazy(tiles) : spawn() })
     return
   }
   // 需要先判断游戏是否已经结束, 或是游戏是否处于暂停状态等
@@ -117,7 +117,7 @@ export const tick = (dispatch, getState) => {
     type: SET_SCORE,
     score: score + ADD_SCORE[afterUnion.size - afterRemove.size],
   })
-  dispatch({ type: SET_TETROMINO, tetromino: crazy ? spawn() : spawnCrazy(afterRemove) })
+  dispatch({ type: SET_TETROMINO, tetromino: crazy ? spawnCrazy(afterRemove) : spawn() })
   dispatch({ type: SET_TILES, tiles: afterRemove })
 }
 
