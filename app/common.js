@@ -102,11 +102,6 @@ export function removeTiles(tiles) {
     .map(tile => tile.updateIn(['point', 'y'], y => y + downLength.get(y))) // 更新剩下的tiles的y坐标值
 }
 
-/** 获得一个随机整数, 返回结果为[start, end) */
-function randInt(start, end) {
-  return Math.floor(Math.random() * (end - start) + start)
-}
-
 function getRandomTetrominoType() {
   const r = Math.random()
   const array = Object.keys(TETROMINO_TYPES)
