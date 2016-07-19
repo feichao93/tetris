@@ -27,6 +27,7 @@ export default class Controller extends React.Component {
     gameover: React.PropTypes.bool.isRequired,
     speed: React.PropTypes.number.isRequired,
     score: React.PropTypes.number.isRequired,
+    crazy: React.PropTypes.bool.isRequired,
     start: React.PropTypes.func.isRequired,
     restart: React.PropTypes.func.isRequired,
     pause: React.PropTypes.func.isRequired,
@@ -141,7 +142,7 @@ export default class Controller extends React.Component {
   }
 
   render() {
-    const { score, on, paused, gameover, speed } = this.props
+    const { score, on, paused, gameover, speed, crazy } = this.props
     return (
       <div className="controller">
         <h1>Controller</h1>
@@ -159,9 +160,15 @@ export default class Controller extends React.Component {
         <button onClick={this.yzcSpecial} ref="yzcSpecialButton">
           <small>超神的神秘按钮</small>
         </button>
-        <button onClick={this.shinimaSpecial} ref="shinimaSpecialButton">
-          <small>shinima的神秘按钮</small>
-        </button>
+        {crazy ? (
+          <button disabled>
+            <small>已启用</small>
+          </button>
+        ) : (
+          <button onClick={this.shinimaSpecial} ref="shinimaSpecialButton">
+            <small>shinima的神秘按钮</small>
+          </button>
+        )}
         <div style={{ marginTop: 15 }}>
           <label style={{ marginRight: 10 }}>当前速度 {speed}</label>
           <button onClick={this.speedUp} disabled={!on || paused || speed === MAX_SPEED}>

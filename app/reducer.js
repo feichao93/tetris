@@ -25,8 +25,8 @@ const initialState = Map({
 
 export default function reducer(state = initialState, action) {
   if (action.type === RESET) {
-    const { speed } = state.toObject()
-    return initialState.set('speed', speed)
+    const { speed, crazy } = state.toObject()
+    return initialState.merge({ speed, crazy })
   } else if (action.type === START) {
     return state.set('on', true)
   } else if (action.type === PAUSE) {
