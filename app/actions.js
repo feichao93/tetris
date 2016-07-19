@@ -1,5 +1,5 @@
 import { Range } from 'immutable'
-import { spawn, isValidTetromino, canMoveDown, getPoints, removeTiles } from './common'
+import { spawn, spawnCrazy, isValidTetromino, canMoveDown, getPoints, removeTiles } from './common'
 import { TileInfo, Point } from './types'
 import { TETROMINOS, ADD_SCORE, BOARD_WIDTH, BOARD_HEIGHT } from './constants'
 
@@ -16,6 +16,8 @@ export const SET_TETROMINO = 'SET_TETROMINO'
 export const SET_SCORE = 'SET_SCORE'
 export const SET_TILES = 'SET_TILES'
 export const SET_SPEED = 'SET_SPEED'
+export const CRAZY = 'CRAZY'
+export const startCrazy = () => ({ type: CRAZY })
 
 export const start = () => ({ type: START })
 export const setSpeed = speed => dispatch => {
@@ -77,7 +79,7 @@ export const drop = () => (dispatch, getState) => {
 }
 
 export const tick = (dispatch, getState) => {
-  const { tetromino, tiles, score } = getState().toObject()
+  const { tetromino, tiles, score, crazy } = getState().toObject()
   // tick=0 时需要生成第一个tetromino
   if (!tetromino) {
     dispatch({ type: SET_TETROMINO, tetromino: spawn() })
@@ -115,7 +117,7 @@ export const tick = (dispatch, getState) => {
     type: SET_SCORE,
     score: score + ADD_SCORE[afterUnion.size - afterRemove.size],
   })
-  dispatch({ type: SET_TETROMINO, tetromino: spawn() })
+  dispatch({ type: SET_TETROMINO, tetromino: crazy ? spawn() : spawnCrazy(afterRemove) })
   dispatch({ type: SET_TILES, tiles: afterRemove })
 }
 

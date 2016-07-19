@@ -13,10 +13,12 @@ import {
   rotate,
   setSpeed,
   special,
+  startCrazy,
 } from '../actions'
 
 @connect(state => state.toObject(), {
-  start, restart, pause, resume, drop, moveLeft, moveRight, moveDown, rotate, setSpeed, special,
+  start, restart, pause, resume, drop,
+  moveLeft, moveRight, moveDown, rotate, setSpeed, special, startCrazy,
 })
 export default class Controller extends React.Component {
   static propTypes = {
@@ -36,6 +38,7 @@ export default class Controller extends React.Component {
     rotate: React.PropTypes.func.isRequired,
     setSpeed: React.PropTypes.func.isRequired,
     special: React.PropTypes.func.isRequired,
+    startCrazy: React.PropTypes.func.isRequired,
   }
 
   componentDidMount() {
@@ -128,8 +131,13 @@ export default class Controller extends React.Component {
   }
 
   yzcSpecial = () => {
-    this.refs.specialButton.blur()
+    this.refs.yzcSpecialButton.blur()
     this.props.special()
+  }
+
+  shinimaSpecial = () => {
+    this.refs.shinimaSpecialButton.blur()
+    this.props.startCrazy()
   }
 
   render() {
@@ -148,15 +156,18 @@ export default class Controller extends React.Component {
           :
           <button onClick={this.pause} disabled={!on || gameover}>pause</button>
         }
-        <button onClick={this.yzcSpecial} ref="specialButton">
+        <button onClick={this.yzcSpecial} ref="yzcSpecialButton">
           <small>超神的神秘按钮</small>
+        </button>
+        <button onClick={this.shinimaSpecial} ref="shinimaSpecialButton">
+          <small>shinima的神秘按钮</small>
         </button>
         <div style={{ marginTop: 15 }}>
           <label style={{ marginRight: 10 }}>当前速度 {speed}</label>
-          <button onClick={this.speedUp} disabled={!on || speed === MAX_SPEED}>
+          <button onClick={this.speedUp} disabled={!on || paused || speed === MAX_SPEED}>
             +
           </button>
-          <button onClick={this.speedDown} disabled={!on || speed === MIN_SPEED}>
+          <button onClick={this.speedDown} disabled={!on || paused || speed === MIN_SPEED}>
             -
           </button>
         </div>
