@@ -1,6 +1,6 @@
 import { Set, Range } from 'immutable'
-import { TETROMINO_TYPES, BOARD_HEIGHT, BOARD_WIDTH } from '../constants'
-import { Point, TetrominoInfo } from '../types'
+import { TETROMINO_TYPES, BOARD_HEIGHT, BOARD_WIDTH } from './constants'
+import { Point, TetrominoInfo } from './types'
 
 /** 判断一个点是否合法 */
 export function isValidPoint(point) {
@@ -117,7 +117,7 @@ function getRandomTetrominoType() {
 export function spawn() {
   return TetrominoInfo({
     type: getRandomTetrominoType(),
-    refPoint: Point({ x: randInt(1, 8), y: 3 }),
-    angle: 90,
+    refPoint: Point({ x: 5, y: 1 }),
+    angle: 0,
   })
 }

@@ -1,12 +1,6 @@
-export const COLORS = {
-  CYAN: 'cyan', // I
-  BLUE: 'blue', // J
-  ORANGE: 'orange', // L
-  YELLOW: 'yellow', // O
-  LIME: 'lime', // S
-  PURPLE: 'purple', // T
-  RED: 'red', // Z
-}
+export const GRID_SIZE = 30
+export const BOARD_WIDTH = 10
+export const BOARD_HEIGHT = 20
 
 export const TETROMINO_TYPES = {
   I: 'I',
@@ -18,16 +12,20 @@ export const TETROMINO_TYPES = {
   Z: 'Z',
 }
 
-export const TETROMINO_COLORS = {
-  [TETROMINO_TYPES.I]: COLORS.CYAN,
-  [TETROMINO_TYPES.J]: COLORS.BLUE,
-  [TETROMINO_TYPES.L]: COLORS.ORANGE,
-  [TETROMINO_TYPES.O]: COLORS.YELLOW,
-  [TETROMINO_TYPES.S]: COLORS.LIME,
-  [TETROMINO_TYPES.T]: COLORS.PURPLE,
-  [TETROMINO_TYPES.Z]: COLORS.RED,
+export const ADD_SCORE = {
+  0: 0,
+  [BOARD_WIDTH]: 2,
+  [2 * BOARD_WIDTH]: 5,
+  [3 * BOARD_WIDTH]: 15,
+  [4 * BOARD_WIDTH]: 60,
 }
 
-export const GRID_SIZE = 30
-export const BOARD_WIDTH = 10
-export const BOARD_HEIGHT = 20
+export const TETROMINOS = {
+  [TETROMINO_TYPES.I]: { color: 'cyan', direction: 2 },
+  [TETROMINO_TYPES.J]: { color: 'blue', direction: 4 },
+  [TETROMINO_TYPES.L]: { color: 'orange', direction: 4 },
+  [TETROMINO_TYPES.O]: { color: 'yellow', direction: 1 },
+  [TETROMINO_TYPES.S]: { color: 'lime', direction: 2 },
+  [TETROMINO_TYPES.T]: { color: 'purple', direction: 4 },
+  [TETROMINO_TYPES.Z]: { color: 'red', direction: 2 },
+}

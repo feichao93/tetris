@@ -1,7 +1,7 @@
 import React from 'react'
 import ImmutablePropTypes from 'react-immutable-proptypes'
 import { Record } from 'immutable'
-import { COLORS, TETROMINO_TYPES } from './constants'
+import { TETROMINO_TYPES, TETROMINOS } from './constants'
 
 const { recordOf } = ImmutablePropTypes
 const { number, string } = React.PropTypes
@@ -15,7 +15,6 @@ Point.propTypes = recordOf({
   y: number.isRequired,
 })
 Object.assign(Point.prototype, {
-  // todo 需要考虑I/O这两个形状的angle是限制的情况
   relative({ dx = 0, dy = 0, angle = 0 }) {
     const rotate = (angle / 90) % 4
     switch (rotate) {
@@ -35,16 +34,13 @@ Object.assign(Point.prototype, {
 
 
 export const TileInfo = Record({
-  color: COLORS.CYAN,
+  color: 'black',
   point: Point(),
 })
 TileInfo.propTypes = recordOf({
   color: string.isRequired,
   point: Point.propTypes.isRequired,
 })
-TileInfo.of = function (x, y, color) {
-  return TileInfo({ point: Point({ x, y }), color })
-}
 
 
 export const TetrominoInfo = Record({
@@ -56,4 +52,10 @@ TetrominoInfo.propTypes = recordOf({
   type: string.isRequired,
   refPoint: Point.propTypes.isRequired,
   angle: number.isRequired,
+})
+Object.assign(TetrominoInfo.prototype, {
+  amendAngle() {
+    const direction = TETROMINOS[this.type].direction
+    return this.update('angle', angle => angle % (90 * direction))
+  },
 })

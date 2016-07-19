@@ -1,13 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { startTimer, stopTimer } from '../utils/timerMiddleware'
-import { restartGame, moveLeft, moveRight, rotate } from '../actions'
-// import ImmutablePropTypes from 'react-immutable-proptypes'
+import { start, stop, moveLeft, moveRight, rotate } from '../actions'
 
 @connect(state => state.toObject(), {
-  startTimer,
-  stopTimer,
-  restartGame,
+  start,
+  stop,
   moveLeft,
   moveRight,
   rotate,
@@ -15,9 +12,8 @@ import { restartGame, moveLeft, moveRight, rotate } from '../actions'
 export default class Controller extends React.Component {
   static propTypes = {
     score: React.PropTypes.number.isRequired,
-    startTimer: React.PropTypes.func.isRequired,
-    stopTimer: React.PropTypes.func.isRequired,
-    restartGame: React.PropTypes.func.isRequired,
+    start: React.PropTypes.func.isRequired,
+    stop: React.PropTypes.func.isRequired,
     moveLeft: React.PropTypes.func.isRequired,
     moveRight: React.PropTypes.func.isRequired,
     rotate: React.PropTypes.func.isRequired,
@@ -47,9 +43,8 @@ export default class Controller extends React.Component {
       <div className="controller">
         <h1>Controller</h1>
         <h2>当前分数: {score}</h2>
-        <button onClick={() => this.props.startTimer(250)}>start</button>
-        <button onClick={this.props.stopTimer}>stop</button>
-        <button onClick={this.props.restartGame}>restart</button>
+        <button onClick={() => this.props.start(200)}>start</button>
+        <button onClick={this.props.stop}>stop</button>
       </div>
     )
   }

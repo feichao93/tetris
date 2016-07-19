@@ -2,9 +2,9 @@ import React from 'react'
 import ImmutablePropTypes from 'react-immutable-proptypes'
 import { connect } from 'react-redux'
 import { Range } from 'immutable'
-import { GRID_SIZE, BOARD_WIDTH, BOARD_HEIGHT, TETROMINO_COLORS } from '../constants'
+import { GRID_SIZE, BOARD_WIDTH, BOARD_HEIGHT, TETROMINOS } from '../constants'
 import { TileInfo, TetrominoInfo } from '../types'
-import { getPoints } from '../utils/common'
+import { getPoints } from '../common'
 
 const getProps = state => state.toObject()
 
@@ -12,7 +12,7 @@ const getProps = state => state.toObject()
 export default class Board extends React.Component {
   static propTypes = {
     tiles: ImmutablePropTypes.iterableOf(TileInfo.propTypes.isRequired).isRequired,
-    tetromino: TetrominoInfo.propTypes.isRequired,
+    tetromino: TetrominoInfo.propTypes,
   }
 
   render() {
@@ -29,17 +29,18 @@ export default class Board extends React.Component {
             <Tile key={index} tile={tile} />
           ).toArray()}
         </div>
-        <Tetromino tetromino={tetromino} />
+        {tetromino ?
+          <Tetromino tetromino={tetromino} />
+          : null}
       </div>
     )
   }
 }
 
-// todo 需要考虑I/O这两个形状的angle是限制的情况
 const Tetromino = ({ tetromino }) => (
   <div>
     {getPoints(tetromino).map((point, index) =>
-      <Tile key={index} tile={TileInfo({ point, color: TETROMINO_COLORS[tetromino.type] })} />
+      <Tile key={index} tile={TileInfo({ point, color: TETROMINOS[tetromino.type].color })} />
     ).toArray()}
   </div>
 )
