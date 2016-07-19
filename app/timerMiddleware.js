@@ -5,7 +5,7 @@ export default ({ dispatch, getState }) => next => action => {
   if (typeof action === 'object') {
     if (action.type === START || action.type === RESUME || action.type === RESET_TICK_TIMEOUT) {
       clearInterval(handler)
-      handler = setInterval(() => dispatch(tick), getState().get('tickInterval'))
+      handler = setInterval(() => dispatch(tick), 1000 / getState().get('speed'))
     } else if (action.type === PAUSE || action.type === GAME_OVER) {
       clearInterval(handler)
     }

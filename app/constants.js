@@ -1,6 +1,8 @@
 export const GRID_SIZE = 30
 export const BOARD_WIDTH = 10
 export const BOARD_HEIGHT = 20
+export const MIN_SPEED = 1
+export const MAX_SPEED = 10
 
 export const TETROMINO_TYPES = {
   I: 'I',

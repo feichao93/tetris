@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { MAX_SPEED, MIN_SPEED } from '../constants'
 import {
   start,
   restart,
@@ -10,16 +11,18 @@ import {
   moveRight,
   moveDown,
   rotate,
+  setSpeed,
 } from '../actions'
 
 @connect(state => state.toObject(), {
-  start, restart, pause, resume, drop, moveLeft, moveRight, moveDown, rotate,
+  start, restart, pause, resume, drop, moveLeft, moveRight, moveDown, rotate, setSpeed,
 })
 export default class Controller extends React.Component {
   static propTypes = {
     on: React.PropTypes.bool.isRequired,
     paused: React.PropTypes.bool.isRequired,
     gameover: React.PropTypes.bool.isRequired,
+    speed: React.PropTypes.number.isRequired,
     score: React.PropTypes.number.isRequired,
     start: React.PropTypes.func.isRequired,
     restart: React.PropTypes.func.isRequired,
@@ -30,6 +33,7 @@ export default class Controller extends React.Component {
     moveRight: React.PropTypes.func.isRequired,
     moveDown: React.PropTypes.func.isRequired,
     rotate: React.PropTypes.func.isRequired,
+    setSpeed: React.PropTypes.func.isRequired,
   }
 
   componentDidMount() {
@@ -111,8 +115,18 @@ export default class Controller extends React.Component {
     this.props.resume()
   }
 
+  speedUp = event => {
+    event.target.blur()
+    this.props.setSpeed(this.props.speed + 1)
+  }
+
+  speedDown = event => {
+    event.target.blur()
+    this.props.setSpeed(this.props.speed - 1)
+  }
+
   render() {
-    const { score, on, paused, gameover } = this.props
+    const { score, on, paused, gameover, speed } = this.props
     return (
       <div className="controller">
         <h1>Controller</h1>
@@ -127,6 +141,15 @@ export default class Controller extends React.Component {
           :
           <button onClick={this.pause} disabled={!on || gameover}>pause</button>
         }
+        <div style={{ marginTop: 15 }}>
+          <label style={{ marginRight: 10 }}>当前速度 {speed}</label>
+          <button onClick={this.speedUp} disabled={gameover || speed === MAX_SPEED}>
+            +
+          </button>
+          <button onClick={this.speedDown} disabled={gameover || speed === MIN_SPEED}>
+            -
+          </button>
+        </div>
       </div>
     )
   }

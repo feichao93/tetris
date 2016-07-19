@@ -1,18 +1,9 @@
 import { spawn, isValidTetromino, canMoveDown, getPoints, removeTiles } from './common'
 import { TileInfo } from './types'
-import { TETROMINOS, ADD_SCORE } from './constants'
+import { TETROMINOS, ADD_SCORE, BOARD_WIDTH } from './constants'
 
 // 重置tick的倒计时
 export const RESET_TICK_TIMEOUT = 'RESET_TICK_TIMEOUT'
-
-export const MOVE = 'MOVE'
-export const moveLeft = () => ({ type: MOVE, dx: -1, dy: 0, rotate: 0 })
-export const moveRight = () => ({ type: MOVE, dx: 1, dy: 0, rotate: 0 })
-export const moveDown = () => dispatch => {
-  dispatch({ type: MOVE, dx: 0, dy: 1, rotate: 0 })
-  dispatch({ type: RESET_TICK_TIMEOUT })
-}
-export const rotate = () => ({ type: MOVE, dx: 0, dy: 0, rotate: 270 })
 
 export const START = 'START'
 export const PAUSE = 'PAUSE'
@@ -23,14 +14,53 @@ export const RESET = 'RESET'
 export const SET_TETROMINO = 'SET_TETROMINO'
 export const SET_SCORE = 'SET_SCORE'
 export const SET_TILES = 'SET_TILES'
+export const SET_SPEED = 'SET_SPEED'
 
 export const start = () => ({ type: START })
+export const setSpeed = speed => dispatch => {
+  dispatch({ type: SET_SPEED, speed })
+  dispatch({ type: START }) // dispatch START刷新计时器
+}
 export const restart = () => dispatch => {
   dispatch({ type: RESET })
   dispatch({ type: START })
 }
 export const pause = () => ({ type: PAUSE })
 export const resume = () => ({ type: RESUME })
+
+export const move = ({ dx = 0, dy = 0, rotate = 0 }) => (dispatch, getState) => {
+  const { tetromino, tiles } = getState().toObject()
+  const movedTetromino = tetromino.move({ dx, dy, rotate })
+  if (isValidTetromino(movedTetromino, tiles)) {
+    dispatch({ type: SET_TETROMINO, tetromino: movedTetromino })
+    return
+  }
+  const points = getPoints(movedTetromino)
+  const minX = points.minBy(p => p.x).x
+  if (minX < 0) { // 旋转之后tetromino太靠左, 需要自动向右移动
+    const amendedTetromino = movedTetromino.move({ dx: -minX })
+    if (isValidTetromino(amendedTetromino, tiles)) {
+      dispatch({ type: SET_TETROMINO, tetromino: amendedTetromino })
+      return
+    }
+  }
+  const maxX = points.maxBy(p => p.x).x
+  if (maxX >= BOARD_WIDTH) { // 旋转之后tetromino太靠右, 需要自动向左移动
+    const amendedTetromino = movedTetromino.move({ dx: -maxX + BOARD_WIDTH - 1 })
+    if (isValidTetromino(amendedTetromino, tiles)) {
+      dispatch({ type: SET_TETROMINO, tetromino: amendedTetromino })
+    }
+  }
+  // 否则该次移动无效
+}
+
+export const moveLeft = () => move({ dx: -1 })
+export const moveRight = () => move({ dx: 1 })
+export const moveDown = () => dispatch => {
+  dispatch(move({ dy: 1 }))
+  dispatch({ type: RESET_TICK_TIMEOUT })
+}
+export const rotate = () => move({ rotate: 270 })
 
 export const drop = () => (dispatch, getState) => {
   const state = getState()

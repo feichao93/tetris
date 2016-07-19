@@ -2,7 +2,7 @@ import { Map, Set } from 'immutable'
 import {
   START,
   RESET,
-  MOVE,
+  SET_SPEED,
   SET_TETROMINO,
   SET_TILES,
   SET_SCORE,
@@ -10,7 +10,6 @@ import {
   PAUSE,
   RESUME,
 } from './actions'
-import { isValidTetromino } from './common'
 
 const initialState = Map({
   tiles: Set(),
@@ -19,13 +18,13 @@ const initialState = Map({
   on: false, // 标记游戏是否正在进行中
   paused: false, // 标记游戏是否暂停
   gameover: false, // 标记游戏是否结束
-  tickInterval: 250,
+  speed: 2,
 })
 
 export default function reducer(state = initialState, action) {
-  const { tetromino, tiles, tickInterval } = state.toObject()
   if (action.type === RESET) {
-    return initialState.set('tickInterval', tickInterval)
+    const { speed } = state.toObject()
+    return initialState.set('speed', speed)
   } else if (action.type === START) {
     return state.set('on', true)
   } else if (action.type === PAUSE) {
@@ -40,13 +39,8 @@ export default function reducer(state = initialState, action) {
     return state.set('tiles', action.tiles)
   } else if (action.type === SET_SCORE) {
     return state.set('score', action.score)
-  } else if (action.type === MOVE) {
-    const { dx, dy, rotate } = action
-    const movedTetromino = tetromino.move({ dx, dy, rotate })
-    if (isValidTetromino(movedTetromino, tiles)) {
-      return state.set('tetromino', movedTetromino)
-    }
-    return state
+  } else if (action.type === SET_SPEED) {
+    return state.set('speed', action.speed)
   }
   return state
 }
