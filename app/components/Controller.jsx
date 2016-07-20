@@ -77,7 +77,7 @@ export default class Controller extends React.Component {
       return
     }
     if (event.key === 'w' || event.keyCode === 87) {
-      this.startTimer('w', this.props.rotate)
+      this.startTimer('w', this.props.rotate, 250)
     } else if (event.key === 'a' || event.keyCode === 65) {
       this.startTimer('a', this.props.moveLeft)
     } else if (event.key === 'd' || event.keyCode === 68) {
