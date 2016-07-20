@@ -77,7 +77,7 @@ export function isValidTetromino(tetromino, tiles) {
 
 /** 判断tetromino能否继续往下移动 */
 export function canMoveDown(tetromino, tiles) {
-  const afterMove = tetromino.updateIn(['refPoint', 'y'], y => y + 1)
+  const afterMove = tetromino.move({ dy: 1 })
   return isValidTetromino(afterMove, tiles)
 }
 
@@ -122,11 +122,16 @@ export function spawn() {
 }
 
 function dropToBottom(tetromino, tiles) {
-  let dropResult = tetromino
-  while (isValidTetromino(dropResult, tiles)) {
-    dropResult = dropResult.move({ dy: 1 })
-  }
-  return dropResult.move({ dy: -1 })
+  const points = getPoints(tetromino)
+  const tilePoints = tiles.map(tile => tile.point)
+  const tetrominoBottom = points.groupBy(p => p.x).map(ps => ps.map(p => p.y).max())
+  const relatedXs = tetrominoBottom.keySeq().toSet()
+  const tilesTop = relatedXs.toMap().map(x => {
+    const ps = tilePoints.filter(p => p.x === x)
+    return ps.isEmpty() ? BOARD_HEIGHT : ps.map(p => p.y).min()
+  })
+  const dys = relatedXs.toMap().map(x => tilesTop.get(x) - tetrominoBottom.get(x))
+  return tetromino.move({ dy: dys.min() - 1 })
 }
 
 export function spawnCrazy(tiles) {
