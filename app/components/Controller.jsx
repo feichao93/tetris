@@ -145,7 +145,7 @@ export default class Controller extends React.Component {
     const { score, on, paused, gameover, speed, crazy } = this.props
     return (
       <div className="controller">
-        <h1>Controller</h1>
+        <h1>{crazy ? '多一点真诚, 少一点套路' : 'Controller'}</h1>
         <h2>当前分数: {score}</h2>
         {!paused && !gameover ?
           <button onClick={this.start} disabled={on}>start</button>

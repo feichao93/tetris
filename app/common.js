@@ -135,41 +135,46 @@ function dropToBottom(tetromino, tiles) {
 }
 
 export function spawnCrazy(tiles) {
-  try {
-    Map(TETROMINO_TYPES).sortBy(type => TETROMINOS[type].hard)
-      .reverse()
-      .forEach(type => {
-        const canRemove = Range(0, TETROMINOS[type].direction).map(n =>
-          Range(0, BOARD_WIDTH).map(x => TetrominoInfo({
-            type,
-            refPoint: Point({ x, y: 1 }),
-            angle: 90 * n,
+  let spawnType
+  let removeCountMap = Map()
+
+  Map(TETROMINO_TYPES).sortBy(type => TETROMINOS[type].hard)
+    .reverse()
+    .forEach(type => {
+      const removeCount = Range(0, TETROMINOS[type].direction).map(n =>
+        Range(0, BOARD_WIDTH).map(x => TetrominoInfo({
+          type,
+          refPoint: Point({ x, y: 1 }),
+          angle: 90 * n,
+        })))
+        .flatten(true)
+        .filter(tetromino => isValidTetromino(tetromino, Set()))
+        .map(tetromino => dropToBottom(tetromino, tiles))
+        .map(tetromino => {
+          const afterUnion = tiles.union(getPoints(tetromino).map(point => TileInfo({
+            point,
+            color: TETROMINOS[tetromino.type].color,
           })))
-          .flatten(true)
-          .filter(tetromino => isValidTetromino(tetromino, Set()))
-          .map(tetromino => dropToBottom(tetromino, tiles))
-          .map(tetromino => {
-            const afterUnion = tiles.union(getPoints(tetromino).map(point => TileInfo({
-              point,
-              color: TETROMINOS[tetromino.type].color,
-            })))
-            return getRemoveRowIndices(afterUnion).count() > 0
-          })
-          .some(can => can)
-        if (!canRemove) {
-          throw type
-        }
-      })
-  } catch (type) {
-    return TetrominoInfo({
-      type,
-      refPoint: Point({ x: 5, y: 1 }),
-      angle: 0,
+          return getRemoveRowIndices(afterUnion).count()
+        })
+        .max()
+
+      if (removeCount === 0) {
+        spawnType = type
+        return false // stop iteration
+      }
+      removeCountMap = removeCountMap.set(type, removeCount)
+      return true
     })
+
+  if (!spawnType) {
+    const minCount = removeCountMap.min()
+    const candidates = removeCountMap.filter(count => count === minCount).keySeq().toList()
+    spawnType = candidates.get(Math.floor(Math.random() * candidates.size))
   }
 
   return TetrominoInfo({
-    type: getRandomTetrominoType(),
+    type: spawnType,
     refPoint: Point({ x: 5, y: 1 }),
     angle: 0,
   })
